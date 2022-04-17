@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "../../ArrayLib/src/ArrayLib.h"
 
 int main() {
     printf("\nEnter table width: ");
