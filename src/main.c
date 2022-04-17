@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "../../ArrayLib/src/ArrayLib.h"
 
 int main() {
@@ -11,54 +12,83 @@ int main() {
     int tableHeight = 0;
     scanf("%d", &tableHeight);
 
-    //Use as chiTable[y][x]
+    //Use as dataTable[y][x]
     //Reminder *(array + 1) = array[1] = array item 2
-    int** chiTable = malloc((tableHeight + 1) * sizeof(*chiTable));
+    int** dataTable = malloc((tableHeight + 1) * sizeof(*dataTable));
     for (int i = 0; i < (tableHeight + 1); i++) {
-        chiTable[i] = malloc((tableWidth + 1) * sizeof(**chiTable));
+        dataTable[i] = malloc((tableWidth + 1) * sizeof(**dataTable));
     }
 
     printf("\n");
     for (int i = 0; i < tableHeight; i++) {
         for (int j = 0; j < tableWidth; j++) {
-            printf("Enter data for[%d][%d]: ", i, j);
-            scanf("%d", &chiTable[i][j]);
+            printf("Enter data for [%d][%d]: ", i, j);
+            scanf("%d", &dataTable[i][j]);
+        }
+    }
+
+    for (int i = 0; i < tableHeight; i++) {
+        dataTable[i][tableWidth] = 0;
+        for (int j = 0; j < tableWidth; j++) {
+            dataTable[i][tableWidth] += dataTable[i][j];
+        }
+    }
+    for (int i = 0; i < tableWidth; i++) {
+        dataTable[tableHeight][i] = 0;
+        for (int j = 0; j < tableHeight; j++) {
+            dataTable[tableHeight][i] += dataTable[j][i];
+        }
+    }
+    dataTable[tableHeight][tableWidth] = 0;
+    int rowSums = 0;
+    int columnSums = 0;
+    for (int i = 0; i < tableHeight; i++) {
+        rowSums += dataTable[i][tableWidth];
+    }
+    for (int i = 0; i < tableWidth; i++) {
+        columnSums += dataTable[tableHeight][i];
+    }
+    if (rowSums == columnSums) {
+        dataTable[tableHeight][tableWidth] = rowSums;
+    } else {
+        printf("\nWhat the fuck happened!\nWidth sum: %d\nHeight sum:%d", columnSums, rowSums);
+    }
+    printf("\n\nData:");
+    for (int i = 0; i < (tableHeight + 1); i++) {
+        printf("\n");
+        for (int j = 0; j < (tableWidth + 1); j++) {
+            printf("%d ", dataTable[i][j]);
+        }
+    }
+
+    float** expectedTable = malloc(tableHeight * sizeof(*expectedTable));
+    for (int i = 0; i < tableHeight; i++) {
+        expectedTable[i] = malloc(tableWidth * sizeof(**expectedTable));
+    }
+    for (int i = 0; i < tableHeight; i++) {
+        for (int j = 0; j < tableWidth; j++) {
+            expectedTable[i][j] = ((float)dataTable[tableHeight][j] * (float)dataTable[i][tableWidth]) / (float)dataTable[tableHeight][tableWidth];
+        }
+    }
+
+    printf("\n\nExpectation:");
+    for (int i = 0; i < tableHeight; i++) {
+        printf("\n");
+        for (int j = 0; j < tableWidth; j++) {
+            printf("%.2f ", expectedTable[i][j]);
         }
     }
 
     int freedom = (tableWidth - 1) * (tableHeight - 1);
+    printf("\n\nDegrees of freedom: %d", freedom);
 
+    float chiValue = 0;
     for (int i = 0; i < tableHeight; i++) {
-        chiTable[i][tableWidth + 1] = 0;
         for (int j = 0; j < tableWidth; j++) {
-            chiTable[i][tableWidth + 1] += chiTable[i][j];
+            chiValue += ((((float)dataTable[i][j] - expectedTable[i][j]) * ((float)dataTable[i][j] - expectedTable[i][j])) / expectedTable[i][j]);
         }
     }
-    for (int i = 0; i < tableWidth; i++) {
-        chiTable[tableHeight + 1][i] = 0;
-        for (int j = 0; j < tableHeight; j++) {
-            chiTable[tableHeight + 1][i] += chiTable[j][i];
-        }
-    }
-    chiTable[tableHeight + 1][tableWidth + 1] = 0;
-    for (int i = 0; i < tableHeight; i++) {
-        int heightSum = 0;
-        heightSum += chiTable[i][tableWidth + 1] = 0;
-    }
-    for (int i = 0; i < tableWidth; i++) {
-        int widthSum = 0;
-        widthSum += chiTable[i][tableHeight + 1] = 0;
-    }
-    if (heightSum != widthSum) {
-        printf("What the fuck happened!");
-    } else {
-        chitable[tableHeight + 1][tableWidth + 1] = heightSum;
-    }
+    printf("\n\nChi value: %.2f", chiValue);
 
-    for (int i = 0; i < (tableHeight + 1); i++) {
-        for (int j = 0; j < (tableWidth + 1); j++) {
-            printf("%d", chiTable[i][j]);
-        }
-        printf("\n");
-    }
+    printf("\n");
 }
