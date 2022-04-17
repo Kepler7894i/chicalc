@@ -66,7 +66,7 @@ int main() {
     }
     for (int i = 0; i < tableHeight; i++) {
         for (int j = 0; j < tableWidth; j++) {
-            expectedTable[i][j] = ((float)dataTable[tableHeight][j] * (float)dataTable[i][tableWidth]) / (float)dataTable[tableHeight][tableWidth];
+            expectedTable[i][j] = (float)dataTable[tableHeight][j] * (float)dataTable[i][tableWidth] / (float)dataTable[tableHeight][tableWidth];
         }
     }
 
@@ -82,9 +82,21 @@ int main() {
     printf("\n\nDegrees of freedom: %d", freedom);
 
     float chiValue = 0;
-    for (int i = 0; i < tableHeight; i++) {
-        for (int j = 0; j < tableWidth; j++) {
-            chiValue += ((((float)dataTable[i][j] - expectedTable[i][j]) * ((float)dataTable[i][j] - expectedTable[i][j])) / expectedTable[i][j]);
+    if (freedom == 1) {
+        float diff = 0;
+        for (int i = 0; i < tableHeight; i++) {
+            for (int j = 0; j < tableWidth; j++) {
+                if ((float)dataTable[i][j] < expectedTable[i][j]) {
+                    diff = -1 * ((float)dataTable[i][j] - expectedTable[i][j]);
+                }
+                chiValue += (diff - 0.5) * (diff - 0.5) / expectedTable[i][j];
+            }
+        }
+    } else {
+        for (int i = 0; i < tableHeight; i++) {
+            for (int j = 0; j < tableWidth; j++) {
+                chiValue += ((float)dataTable[i][j] - expectedTable[i][j]) * ((float)dataTable[i][j] - expectedTable[i][j]) / expectedTable[i][j];
+            }
         }
     }
     printf("\n\nChi value: %.2f", chiValue);
