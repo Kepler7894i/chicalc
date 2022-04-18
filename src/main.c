@@ -13,19 +13,17 @@ int main() {
 
     //Use as dataTable[y][x]
     //Reminder *(array + 1) = array[1] = array item 2
-    int** dataTable = malloc((tableHeight + 1) * sizeof(*dataTable));
+    float** dataTable = malloc((tableHeight + 1) * sizeof(*dataTable));
     for (int i = 0; i < (tableHeight + 1); i++) {
         dataTable[i] = malloc((tableWidth + 1) * sizeof(**dataTable));
     }
-
     printf("\n");
     for (int i = 0; i < tableHeight; i++) {
         for (int j = 0; j < tableWidth; j++) {
             printf("Enter data for [%d][%d]: ", i, j);
-            scanf("%d", &dataTable[i][j]);
+            scanf("%f", &dataTable[i][j]);
         }
     }
-
     for (int i = 0; i < tableHeight; i++) {
         dataTable[i][tableWidth] = 0;
         for (int j = 0; j < tableWidth; j++) {
@@ -56,7 +54,7 @@ int main() {
     for (int i = 0; i < (tableHeight + 1); i++) {
         printf("\n");
         for (int j = 0; j < (tableWidth + 1); j++) {
-            printf("%d ", dataTable[i][j]);
+            printf("%.2f ", dataTable[i][j]);
         }
     }
 
@@ -66,10 +64,9 @@ int main() {
     }
     for (int i = 0; i < tableHeight; i++) {
         for (int j = 0; j < tableWidth; j++) {
-            expectedTable[i][j] = (float)dataTable[tableHeight][j] * (float)dataTable[i][tableWidth] / (float)dataTable[tableHeight][tableWidth];
+            expectedTable[i][j] = dataTable[tableHeight][j] * dataTable[i][tableWidth] / dataTable[tableHeight][tableWidth];
         }
     }
-
     printf("\n\nExpectation:");
     for (int i = 0; i < tableHeight; i++) {
         printf("\n");
@@ -77,17 +74,124 @@ int main() {
             printf("%.2f ", expectedTable[i][j]);
         }
     }
+    /*
+    int changed = 0;
+    int combineRowCount = 0;
+    int combineColCount = 0;
+    for (int i = 0; i < tableHeight; i++) {
+        for (int j = 0; j < tableWidth; j++) {
+            if (expectedTable[i][j] < 5) {
+                changed = 1;
+                if (tableHeight < tableWidth) {
+                    combineColCount += 1;
+                    if (j != 0) {
+                        for (int k = 0; k < tableHeight; k++) {
+                            dataTable[k][j - 1] += dataTable[k][j];
+                            expectedTable[k][j - 1] += expectedTable[k][j];
+                            dataTable[k][j] = 0;
+                            expectedTable[k][j] = 0;
+                        }
+                    } else {
+                        for (int k = 0; k < tableHeight; k++) {
+                            dataTable[k][j + 1] += dataTable[k][j];
+                            expectedTable[k][j + 1] += expectedTable[k][j];
+                            dataTable[k][j] = 0;
+                            expectedTable[k][j] = 0;
+                        }
+                    }
+                } else {
+                    combineRowCount += 1;
+                    if (i != 0) {
+                        for (int k = 0; k < tableWidth; k++) {
+                            dataTable[i - 1][k] += dataTable[i][k];
+                            expectedTable[i - 1][k] += expectedTable[i][k];
+                            dataTable[i][k] = 0;
+                            expectedTable[i][k] = 0;
+                        }
+                    } else {
+                        for (int k = 0; k < tableWidth; k++) {
+                            dataTable[i + 1][k] += dataTable[i][k];
+                            expectedTable[i + 1][k] += expectedTable[i][k];
+                            dataTable[i][k] = 0;
+                            expectedTable[i][k] = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (changed == 1) {
+        tableWidth -= combineColCount;
+        tableHeight -= combineRowCount;
+    }
+
+    float** finalDataTable = malloc((tableHeight + 1) * sizeof(*finalDataTable));
+    for (int i = 0; i < (tableHeight + 1); i++) {
+        finalDataTable[i] = malloc((tableWidth + 1) * sizeof(**finalDataTable));
+    }
+    for (int i = 0; i < (tableHeight + 1); i++) {
+        for (int j = 0; j < (tableWidth + 1); j++) {
+            finalDataTable[i][j] = dataTable[i][j];
+        }
+    }
+
+    float** finalExpectedTable = malloc((tableHeight + 1) * sizeof(*finalExpectedTable));
+    for (int i = 0; i < (tableHeight + 1); i++) {
+        finalExpectedTable[i] = malloc((tableWidth + 1) * sizeof(**finalExpectedTable));
+    }
+    for (int i = 0; i < (tableHeight + 1); i++) {
+        for (int j = 0; j < (tableWidth + 1); j++) {
+            finalExpectedTable[i][j] = expectedTable[i][j];
+        }
+    }
+
+    if (changed = 1) {
+        printf("\n\nCombined data:");
+        for (int i = 0; i < tableHeight; i++) {
+            printf("\n");
+            for (int j = 0; j < tableWidth; j++) {
+                printf("%.2f ", finalDataTable[i][j]);
+            }
+        }
+
+        printf("\n\nCombined expectation:");
+        for (int i = 0; i < tableHeight; i++) {
+            printf("\n");
+            for (int j = 0; j < tableWidth; j++) {
+                printf("%.2f ", finalExpectedTable[i][j]);
+            }
+        }
+    }*/
 
     int freedom = (tableWidth - 1) * (tableHeight - 1);
     printf("\n\nDegrees of freedom: %d", freedom);
 
     float chiValue = 0;
+    /*
     if (freedom == 1) {
         float diff = 0;
         for (int i = 0; i < tableHeight; i++) {
             for (int j = 0; j < tableWidth; j++) {
-                if ((float)dataTable[i][j] < expectedTable[i][j]) {
-                    diff = -1 * ((float)dataTable[i][j] - expectedTable[i][j]);
+                if (finalDataTable[i][j] < finalExpectedTable[i][j]) {
+                    diff = -1 * (finalDataTable[i][j] - finalExpectedTable[i][j]);
+                }
+                chiValue += (diff - 0.5) * (diff - 0.5) / finalExpectedTable[i][j];
+            }
+        }
+    } else {
+        for (int i = 0; i < tableHeight; i++) {
+            for (int j = 0; j < tableWidth; j++) {
+                chiValue += (finalDataTable[i][j] - finalExpectedTable[i][j]) * (finalDataTable[i][j] - finalExpectedTable[i][j]) / finalExpectedTable[i][j];
+            }
+        }
+    }
+    */
+    if (freedom == 1) {
+        float diff = 0;
+        for (int i = 0; i < tableHeight; i++) {
+            for (int j = 0; j < tableWidth; j++) {
+                if (dataTable[i][j] < expectedTable[i][j]) {
+                    diff = -1 * (dataTable[i][j] - expectedTable[i][j]);
                 }
                 chiValue += (diff - 0.5) * (diff - 0.5) / expectedTable[i][j];
             }
@@ -95,7 +199,7 @@ int main() {
     } else {
         for (int i = 0; i < tableHeight; i++) {
             for (int j = 0; j < tableWidth; j++) {
-                chiValue += ((float)dataTable[i][j] - expectedTable[i][j]) * ((float)dataTable[i][j] - expectedTable[i][j]) / expectedTable[i][j];
+                chiValue += (dataTable[i][j] - expectedTable[i][j]) * (dataTable[i][j] - expectedTable[i][j]) / expectedTable[i][j];
             }
         }
     }
