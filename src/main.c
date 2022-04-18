@@ -148,8 +148,7 @@ int main() {
         float diff = 0;
         for (int i = 0; i < tableHeight; i++) {
             for (int j = 0; j < tableWidth; j++) {
-                if (dataTable[i][j] == 0 || expectedTable[i][j] == 0) {
-                } else {
+                if (dataTable[i][j] != 0 && expectedTable[i][j] != 0) {
                     if (dataTable[i][j] < expectedTable[i][j]) {
                         diff = -1 * (dataTable[i][j] - expectedTable[i][j]);
                     }
@@ -160,8 +159,7 @@ int main() {
     } else {
         for (int i = 0; i < tableHeight; i++) {
             for (int j = 0; j < tableWidth; j++) {
-                if (dataTable[i][j] == 0 || expectedTable[i][j] == 0) {
-                } else {
+                if (dataTable[i][j] != 0 && expectedTable[i][j] != 0) {
                     chiValue += (dataTable[i][j] - expectedTable[i][j]) * (dataTable[i][j] - expectedTable[i][j]) / expectedTable[i][j];
                 }
             }
