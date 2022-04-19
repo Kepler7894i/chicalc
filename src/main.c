@@ -3,6 +3,10 @@
 #include <math.h>
 
 int main() {
+    printf("\n\nModel? ");
+    int model = 0;
+    scanf("%d", &model);
+
     printf("\nEnter table width: ");
     int tableWidth = 0;
     scanf("%d", &tableWidth);
@@ -62,12 +66,23 @@ int main() {
     for (int i = 0; i < tableHeight; i++) {
         expectedTable[i] = malloc(tableWidth * sizeof(**expectedTable));
     }
-    for (int i = 0; i < tableHeight; i++) {
-        for (int j = 0; j < tableWidth; j++) {
-            expectedTable[i][j] = dataTable[tableHeight][j] * dataTable[i][tableWidth] / dataTable[tableHeight][tableWidth];
+    if (model == 1) {
+        printf("\n\n");
+        for (int i = 0; i < tableHeight; i++) {
+            for (int j = 0; j < tableWidth; j++) {
+                printf("Enter expectation for [%d][%d]: ", i, j);
+                scanf("%f", &expectedTable[i][j]);
+            }
         }
+    } else {
+        for (int i = 0; i < tableHeight; i++) {
+            for (int j = 0; j < tableWidth; j++) {
+                expectedTable[i][j] = dataTable[tableHeight][j] * dataTable[i][tableWidth] / dataTable[tableHeight][tableWidth];
+            }
+        }
+        printf("\n");
     }
-    printf("\n\nExpectation:");
+    printf("\nExpectation:");
     for (int i = 0; i < tableHeight; i++) {
         printf("\n");
         for (int j = 0; j < tableWidth; j++) {
@@ -140,8 +155,20 @@ int main() {
         }
     }
 
-    int freedom = (tableWidth - 1) * (tableHeight - 1);
-    printf("\n\nDegrees of freedom: %d", freedom);
+    int freedom = 0;
+    if (model == 1) {
+        int bins = tableHeight * tableWidth;
+
+        printf("\n\nConstraints? ");
+        int constraints = 0;
+        scanf("%d", &constraints);
+
+        freedom = bins - constraints;
+    } else {
+        freedom = (tableWidth - 1) * (tableHeight - 1);
+        printf("\n");
+    }
+    printf("\nDegrees of freedom: %d", freedom);
 
     float chiValue = 0;
     if (freedom == 1) {
