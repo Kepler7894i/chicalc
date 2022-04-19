@@ -50,7 +50,7 @@ int main() {
     } else {
         printf("\nWhat the fuck happened!\nWidth sum: %d\nHeight sum:%d", columnSums, rowSums);
     }
-    printf("\n\nData:");
+    printf("\nData:");
     for (int i = 0; i < (tableHeight + 1); i++) {
         printf("\n");
         for (int j = 0; j < (tableWidth + 1); j++) {
