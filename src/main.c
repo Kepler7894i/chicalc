@@ -149,8 +149,9 @@ int main() {
         for (int i = 0; i < tableHeight; i++) {
             for (int j = 0; j < tableWidth; j++) {
                 if (dataTable[i][j] != 0 && expectedTable[i][j] != 0) {
+                    diff = dataTable[i][j] - expectedTable[i][j];
                     if (dataTable[i][j] < expectedTable[i][j]) {
-                        diff = -1 * (dataTable[i][j] - expectedTable[i][j]);
+                        diff *= -1;
                     }
                     chiValue += (diff - 0.5) * (diff - 0.5) / expectedTable[i][j];
                 }
